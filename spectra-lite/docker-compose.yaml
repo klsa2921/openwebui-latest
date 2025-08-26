@@ -1,0 +1,46 @@
+services:
+  ollama:
+    volumes:
+      - ollama:/root/.ollama
+    container_name: spectra-ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: harbor.int.taqniat.ae/ollama/ollama:0.9.0
+
+  open-webui:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: spectra-lite
+    volumes:
+      - ./spectra-lite-data:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${OPEN_WEBUI_PORT-3000}:8080
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
+      - 'ENABLE_ADMIN_FUNCTIONS=${ENABLE_ADMIN_FUNCTIONS-false}'
+      - 'ENABLE_ADMIN_SETTINGS=${ENABLE_ADMIN_SETTINGS-false}'
+      - 'ENABLE_ADMIN_EVALUATIONS=${ENABLE_ADMIN_EVALUATIONS-false}'
+      - 'ENABLE_CHAT_VOICE_CONTROLS=${ENABLE_CHAT_VOICE_CONTROLS-false}'
+      - 'ENABLE_CHAT_CONTROLS=${ENABLE_CHAT_CONTROLS-false}'
+      - 'ENABLE_WORKSPACE=${ENABLE_WORKSPACE-false}'
+      - 'ENABLE_FILE_UPLOAD=${ENABLE_FILE_UPLOAD-false}'
+      - 'ENABLE_CODE_EXECUTION=${ENABLE_CODE_EXECUTION-false}'
+      - 'ENABLE_CODE_INTERPRETER=${ENABLE_CODE_INTERPRETER-false}'
+      - 'ENABLE_CODE_EXECCUTION=${ENABLE_CODE_EXECCUTION-false}'
+      - 'USER_PERMISSIONS_FEATURES_CODE_INTERPRETER=${USER_PERMISSIONS_FEATURES_CODE_INTERPRETER-false}'
+      - 'ENABLE_NOTES=${ENABLE_NOTES-false}'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+
+volumes:
+  ollama: {}
+  spectra-lite-data: {}
