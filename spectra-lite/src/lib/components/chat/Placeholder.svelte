@@ -135,7 +135,7 @@
 											src={model?.info?.meta?.profile_image_url ??
 												($i18n.language === 'dg-DG'
 													? `${WEBUI_BASE_URL}/doge.png`
-													: `${WEBUI_BASE_URL}/static/favicon.png`)}
+													: `/favicon.png`)}
 											class=" size-9 @sm:size-10 rounded-full border-[1px] border-gray-100 dark:border-none"
 											aria-hidden="true"
 											draggable="false"
@@ -209,7 +209,7 @@
 					</div>
 				</div>
 			{/if}
-<div class="mx-auto max-w-2xl font-primary mt-2" in:fade={{ duration: 200, delay: 200 }}>
+<div class="max-w-2xl font-primary mt-2" in:fade={{ duration: 200, delay: 200 }}>
 		<div class="mx-5">
 			<Suggestions
 				suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??

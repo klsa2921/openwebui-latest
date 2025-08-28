@@ -45,7 +45,7 @@
 {#if !dismissed}
 	{#if mounted}
 		<div
-			class="{className} top-0 left-0 right-0 p-2 px-3 flex justify-center items-center relative rounded-xl border border-gray-100 dark:border-gray-850 text-gray-800 dark:text-gary-100 bg-white dark:bg-gray-900 backdrop-blur-xl z-30"
+			class="{className} top-0 left-0 right-0 p-2 px-3 flex justify-center items-center relative rounded-xl border border-gray-100 dark:border-gray-850 text-gray-800 dark:text-gary-100 bg-[#f5f7fa] dark:bg-[#1a1e2e]  backdrop-blur-xl z-30"
 			transition:fade={{ delay: 100, duration: 300 }}
 		>
 			<div class=" flex flex-col md:flex-row md:items-center flex-1 text-sm w-fit gap-1.5">

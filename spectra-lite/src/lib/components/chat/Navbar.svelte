@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-
+	import { createEventDispatcher, onMount } from 'svelte';
 	import {
 		WEBUI_NAME,
 		banners,
@@ -29,6 +29,14 @@
 
 	import PencilSquare from '../icons/PencilSquare.svelte';
 	import Banner from '../common/Banner.svelte';
+	import { theme } from '$lib/stores';
+	import { changeLanguage } from '$lib/i18n';
+    import LightBulb from '../icons/LightBulb.svelte';
+    import Lifebuoy from '../icons/Lifebuoy.svelte';
+    import Sparkles from '../icons/Sparkles.svelte';
+    import GlobeAlt from '../icons/GlobeAlt.svelte';
+    import Plus from '../icons/Plus.svelte';
+	
 
 	const i18n = getContext('i18n');
 
@@ -41,11 +49,108 @@
 	export let selectedModels;
 	export let showModelSelector = true;
 	export let showBanners = true;
+	let selectedLanguage = 'en-US';
 
 	let closedBannerIds = [];
 
 	let showShareChatModal = false;
 	let showDownloadChatModal = false;
+	let selectedTheme = 'light';
+	let themes = ['dark', 'light'];
+
+	const toggleTheme = () => {
+		selectedTheme = selectedTheme === 'dark' ? 'light' : 'dark';
+		themeChangeHandler(selectedTheme);
+	};
+
+	const themeChangeHandler = (_theme: string) => {
+			theme.set(_theme);
+			localStorage.setItem('theme', _theme);
+			applyTheme(_theme);
+		};
+
+		const applyTheme = (_theme: string) => {
+		let themeToApply = _theme === 'oled-dark' ? 'dark' : _theme;
+
+		if (_theme === 'system') {
+			themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+		}
+
+		if (themeToApply === 'dark' && !_theme.includes('oled')) {
+			document.documentElement.style.setProperty('--color-gray-800', '#333');
+			document.documentElement.style.setProperty('--color-gray-850', '#262626');
+			document.documentElement.style.setProperty('--color-gray-900', '#171717');
+			document.documentElement.style.setProperty('--color-gray-950', '#0d0d0d');
+		}
+
+		themes
+			.filter((e) => e !== themeToApply)
+			.forEach((e) => {
+				e.split(' ').forEach((e) => {
+					document.documentElement.classList.remove(e);
+				});
+			});
+
+		themeToApply.split(' ').forEach((e) => {
+			document.documentElement.classList.add(e);
+		});
+
+		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+		if (metaThemeColor) {
+			if (_theme.includes('system')) {
+				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light';
+				metaThemeColor.setAttribute('content', systemTheme === 'light' ? '#ffffff' : '#171717');
+			} else {
+				metaThemeColor.setAttribute(
+					'content',
+					_theme === 'dark'
+						? '#171717'
+						: _theme === 'oled-dark'
+							? '#000000'
+							: _theme === 'her'
+								? '#983724'
+								: '#ffffff'
+				);
+			}
+		}
+
+		if (typeof window !== 'undefined' && window.applyTheme) {
+			window.applyTheme();
+		}
+
+		if (_theme.includes('oled')) {
+			document.documentElement.style.setProperty('--color-gray-800', '#101010');
+			document.documentElement.style.setProperty('--color-gray-850', '#050505');
+			document.documentElement.style.setProperty('--color-gray-900', '#000000');
+			document.documentElement.style.setProperty('--color-gray-950', '#000000');
+			document.documentElement.classList.add('dark');
+		}
+	};
+
+
+	const toggleLanguage = () => {
+		selectedLanguage = selectedLanguage === 'en-US' ? 'ar' : 'en-US';
+		languageChangeHandler(selectedLanguage);
+	};
+
+	const languageChangeHandler = (_language: string) => {
+			localStorage.setItem('locale', _language);
+			changeLanguage(_language);
+			
+			// Apply RTL for Arabic
+			if (_language.startsWith('ar')) {
+				document.documentElement.setAttribute('dir', 'rtl');
+			} else {
+				document.documentElement.setAttribute('dir', 'ltr');
+			}
+		};
+
+		onMount(() => {
+		selectedTheme = localStorage.theme ?? 'light';
+		selectedLanguage = localStorage.locale ?? 'en-US';
+	});
 </script>
 
 <ShareChatModal bind:show={showShareChatModal} chatId={$chatId} />
@@ -84,7 +189,7 @@
 							<MenuLines />
 						</div>
 					</button>
-
+					<img src="/favicon.png" class="size-8"/>
 					{#if !$mobile}
 						<Tooltip content={$i18n.t('New Chat')}>
 							<button
@@ -97,7 +202,7 @@
 								aria-label="New Chat"
 							>
 								<div class=" m-auto self-center">
-									<PencilSquare className=" size-5" strokeWidth="2" />
+									<Plus className=" size-5" strokeWidth="2" />
 								</div>
 							</button>
 						</Tooltip>
@@ -114,8 +219,8 @@
 					{/if}
 				</div>
 
-				<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400">
-					<!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> -->
+				<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400 gap-2">
+					<!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> 
 					{#if shareEnabled && chat && (chat.id || $temporaryChatEnabled)}
 						<Menu
 							{chat}
@@ -127,6 +232,7 @@
 								showDownloadChatModal = !showDownloadChatModal;
 							}}
 						>
+						
 							<button
 								class="flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition"
 								id="chat-context-menu-button"
@@ -148,8 +254,11 @@
 									</svg>
 								</div>
 							</button>
+							
+						
 						</Menu>
-					{/if}
+					{/if}-->
+					
 
 					{#if $config?.features?.enable_chat_controls ?? true}
 						<Tooltip content={$i18n.t('Controls')}>

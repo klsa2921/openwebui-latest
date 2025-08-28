@@ -118,8 +118,8 @@
 			<ProfileImage
 				src={message.user
 					? ($models.find((m) => m.id === message.user)?.info?.meta?.profile_image_url ??
-						`${WEBUI_BASE_URL}/user.png`)
-					: (user?.profile_image_url ?? `${WEBUI_BASE_URL}/user.png`)}
+						`/user.png`)
+					: (user?.profile_image_url ?? `/user.png`)}
 				className={'size-8 user-message-profile-image'}
 			/>
 		</div>
@@ -286,7 +286,7 @@
 							<div class="flex space-x-1.5">
 								<button
 									id="close-edit-message-button"
-									class="px-4 py-2 bg-white dark:bg-gray-900 hover:bg-gray-100 text-gray-800 dark:text-gray-100 transition rounded-3xl"
+									class="px-4 py-2 bg-[#f5f7fa] dark:bg-[#1a1e2e]  hover:bg-gray-100 text-gray-800 dark:text-gray-100 transition rounded-3xl"
 									on:click={() => {
 										cancelEditMessage();
 									}}

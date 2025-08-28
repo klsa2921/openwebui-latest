@@ -25,7 +25,8 @@
 		models,
 		selectedFolder
 	} from '$lib/stores';
-	import { onMount, getContext, tick, onDestroy } from 'svelte';
+	import { onMount, getContext, tick, onDestroy, createEventDispatcher } from 'svelte';
+	import { SunMedium, Moon, Globe, Languages } from "lucide-svelte";
 
 	const i18n = getContext('i18n');
 
@@ -54,16 +55,30 @@
 	import { getChannels, createNewChannel } from '$lib/apis/channels';
 	import ChannelModal from './Sidebar/ChannelModal.svelte';
 	import ChannelItem from './Sidebar/ChannelItem.svelte';
-	import PencilSquare from '../icons/PencilSquare.svelte';
+	import ListBullet from '../icons/ListBullet.svelte';
 	import Home from '../icons/Home.svelte';
 	import Search from '../icons/Search.svelte';
 	import SearchModal from './SearchModal.svelte';
-
+    import SignOut from '../icons/SignOut.svelte';
+	import { getUsage } from '$lib/apis';
+	import { userSignOut } from '$lib/apis/auths';
+    import ArchiveBox from '../icons/ArchiveBox.svelte';
+    import UserGroup from '../icons/UserGroup.svelte';
+	import { theme } from '$lib/stores';
+	import { changeLanguage } from '$lib/i18n';
+    import LightBulb from '../icons/LightBulb.svelte';
+    import Lifebuoy from '../icons/Lifebuoy.svelte';
+    import Sparkles from '../icons/Sparkles.svelte';
+    import GlobeAlt from '../icons/GlobeAlt.svelte';
+    import ArrowUturnLeft from '../icons/ArrowUturnLeft.svelte';
+    import ArrowLeft from '../icons/ArrowLeft.svelte';
+    import CameraSolid from '../icons/CameraSolid.svelte';
+    import UserCircleSolid from '../icons/UserCircleSolid.svelte';
 	const BREAKPOINT = 768;
 
 	let navElement;
 	let shiftKey = false;
-
+	export let show = false;
 	let selectedChatId = null;
 	let showDropdown = false;
 	let showPinnedChat = true;
@@ -76,6 +91,7 @@
 
 	let folders = {};
 	let newFolderId = null;
+	export let role = '';
 
 	const initFolders = async () => {
 		const folderList = await getFolders(localStorage.token).catch((error) => {
@@ -403,6 +419,124 @@
 		dropZone?.removeEventListener('drop', onDrop);
 		dropZone?.removeEventListener('dragleave', onDragLeave);
 	});
+
+
+	const dispatch = createEventDispatcher();
+
+	let usage = null;
+	const getUsageInfo = async () => {
+		const res = await getUsage(localStorage.token).catch((error) => {
+			console.error('Error fetching usage info:', error);
+		});
+
+		if (res) {
+			usage = res;
+		} else {
+			usage = null;
+		}
+	};	
+
+	$: if (show) {
+		getUsageInfo();
+	}
+
+	let selectedTheme = 'light';
+	let themes = ['dark', 'light'];
+	let selectedLanguage = 'en-US';
+
+	const toggleTheme = () => {
+		selectedTheme = selectedTheme === 'dark' ? 'light' : 'dark';
+		themeChangeHandler(selectedTheme);
+	};
+
+	const themeChangeHandler = (_theme: string) => {
+			theme.set(_theme);
+			localStorage.setItem('theme', _theme);
+			applyTheme(_theme);
+		};
+
+		const applyTheme = (_theme: string) => {
+		let themeToApply = _theme === 'oled-dark' ? 'dark' : _theme;
+
+		if (_theme === 'system') {
+			themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+		}
+
+		if (themeToApply === 'dark' && !_theme.includes('oled')) {
+			document.documentElement.style.setProperty('--color-gray-800', '#333');
+			document.documentElement.style.setProperty('--color-gray-850', '#262626');
+			document.documentElement.style.setProperty('--color-gray-900', '#171717');
+			document.documentElement.style.setProperty('--color-gray-950', '#0d0d0d');
+		}
+
+		themes
+			.filter((e) => e !== themeToApply)
+			.forEach((e) => {
+				e.split(' ').forEach((e) => {
+					document.documentElement.classList.remove(e);
+				});
+			});
+
+		themeToApply.split(' ').forEach((e) => {
+			document.documentElement.classList.add(e);
+		});
+
+		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+		if (metaThemeColor) {
+			if (_theme.includes('system')) {
+				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light';
+				metaThemeColor.setAttribute('content', systemTheme === 'light' ? '#ffffff' : '#171717');
+			} else {
+				metaThemeColor.setAttribute(
+					'content',
+					_theme === 'dark'
+						? '#171717'
+						: _theme === 'oled-dark'
+							? '#000000'
+							: _theme === 'her'
+								? '#983724'
+								: '#ffffff'
+				);
+			}
+		}
+
+		if (typeof window !== 'undefined' && window.applyTheme) {
+			window.applyTheme();
+		}
+
+		if (_theme.includes('oled')) {
+			document.documentElement.style.setProperty('--color-gray-800', '#101010');
+			document.documentElement.style.setProperty('--color-gray-850', '#050505');
+			document.documentElement.style.setProperty('--color-gray-900', '#000000');
+			document.documentElement.style.setProperty('--color-gray-950', '#000000');
+			document.documentElement.classList.add('dark');
+		}
+	};
+
+
+	const toggleLanguage = () => {
+		selectedLanguage = selectedLanguage === 'en-US' ? 'ar' : 'en-US';
+		languageChangeHandler(selectedLanguage);
+	};
+
+	const languageChangeHandler = (_language: string) => {
+			localStorage.setItem('locale', _language);
+			changeLanguage(_language);
+			
+			// Apply RTL for Arabic
+			if (_language.startsWith('ar')) {
+				document.documentElement.setAttribute('dir', 'rtl');
+			} else {
+				document.documentElement.setAttribute('dir', 'ltr');
+			}
+		};
+
+		onMount(() => {
+		selectedTheme = localStorage.theme ?? 'light';
+		selectedLanguage = localStorage.locale ?? 'en-US';
+	});
 </script>
 
 <ArchivedChatsModal
@@ -465,10 +599,51 @@
 >
 
 	<div
-		class="py-2 my-auto flex flex-col justify-between h-screen max-h-[100dvh] w-[260px] overflow-x-hidden z-50 bg-white dark:bg-gray-950 {$showSidebar
+		class="py-2 my-auto flex flex-col justify-between h-screen max-h-[100dvh] w-[260px] overflow-x-hidden z-50 bg-[#f5f7fa] dark:bg-[#1a1e2e] {$showSidebar
 			? ''
 			: 'invisible'}"
-	>
+	>	<div class=" flex flex-row px-5 justify-between">
+						<img
+							crossorigin="anonymous"
+							src="/static/logo.png"
+							class="sidebar-new-chat-icon w-[100px] -translate-x-1.5"
+							alt="logo"
+						/>
+				<Tooltip content="Theme">
+					<button
+						on:click={toggleTheme}
+						class="p-2 rounded-full border transition-all shadow-sm
+						{selectedTheme === 'dark'
+							? 'bg-gray-900 text-yellow-400 border-gray-700'
+							: 'bg-white text-gray-700 border-gray-300'}
+						hover:shadow-md hover:scale-105 hover:ring-2 hover:ring-blue-400 dark:hover:ring-blue-600"
+					>
+						{#if selectedTheme === 'dark'}
+						<Moon class="w-5 h-5" strokeWidth="2" />
+						{:else}
+						<SunMedium class="w-5 h-5" strokeWidth="2" />
+						{/if}
+					</button>
+					</Tooltip>
+
+<Tooltip content="Language">
+  <button
+    on:click={toggleLanguage}
+    class="p-2 rounded-full border transition-all shadow-sm
+      {selectedLanguage === 'ar'
+        ? 'bg-gray-900 text-yellow-400 border-gray-700'
+        : 'bg-white text-gray-700 border-gray-300'}
+      hover:shadow-md hover:scale-105 hover:ring-2 hover:ring-blue-400 dark:hover:ring-blue-600 flex items-center justify-center"
+  >
+    {#if selectedLanguage === 'ar'}
+      <Languages class="w-5 h-5" strokeWidth="2" />
+    {:else}
+      <Globe class="w-5 h-5" strokeWidth="2" />
+    {/if}
+  </button>
+</Tooltip>
+
+					</div>
 		<div class="px-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400">
 			<button
 				class=" cursor-pointer p-[7px] flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition"
@@ -477,20 +652,9 @@
 				}}
 			>
 				<div class=" m-auto self-center">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2"
-						stroke="currentColor"
-						class="size-5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-						/>
-					</svg>
+					<Tooltip content="Collpase">
+					<ArrowLeft className=" size-5" strokeWidth="2" />
+					</Tooltip>
 				</div>
 			</button>
 
@@ -517,21 +681,14 @@
 				}}
 			>
 				<div class="flex items-center">
-					<div class="self-center mx-1.5">
-						<img
-							crossorigin="anonymous"
-							src="{WEBUI_BASE_URL}/static/favicon.png"
-							class="sidebar-new-chat-icon size-5 -translate-x-1.5 rounded-full"
-							alt="logo"
-						/>
-					</div>
+					
 					<div class=" self-center text-sm text-gray-850 dark:text-white font-branding">
 						{$i18n.t('New Chat')}
 					</div>
 				</div>
 
 				<div>
-					<PencilSquare className=" size-5" strokeWidth="2" />
+					<Plus className=" size-5" strokeWidth="2" />
 				</div>
 			</a>
 		</div>
@@ -561,7 +718,7 @@
 				</a>
 			</div>
 		{/if} -->
-
+<!--
 		<div class="px-1.5 flex justify-center text-gray-800 dark:text-gray-200">
 			<button
 				class="grow flex items-center space-x-3 rounded-lg px-2 py-[7px] hover:bg-gray-100 dark:hover:bg-gray-900 transition outline-none"
@@ -579,7 +736,32 @@
 				</div>
 			</button>
 		</div>
-
+		
+		<div class="flex rounded-md py-1.5 px-3 w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer"
+				on:click={() => { 
+					showArchivedChats.set(true);
+				}}
+			>
+				<div class=" self-center mr-3">
+					<CameraSolid className="size-5" strokeWidth="1.5" />
+				</div>
+				<div class=" self-center truncate">{$i18n.t('Archived Chats')}</div>
+			</div>
+				-->
+					<div class="flex rounded-md py-1.5 px-3 w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition select-none  cursor-pointer"
+										on:click={() => {
+											if ($mobile) {
+												showSidebar.set(false);
+											}
+											goto('/admin');
+										}}
+									>
+										<div class=" self-center mr-3">
+											<UserCircleSolid className="w-5 h-5" strokeWidth="1.5" />
+										</div>
+										<div class=" self-center truncate">{$i18n.t('Admin Panel')}</div>
+									</div>
+					
 		{#if ($config?.features?.enable_notes ?? false) && ($user?.role === 'admin' || ($user?.permissions?.features?.notes ?? true))}
 			<div class="px-1.5 flex justify-center text-gray-800 dark:text-gray-200">
 				<a
@@ -908,7 +1090,7 @@
 							{#each $chats as chat, idx (`chat-${chat?.id ?? idx}`)}
 								{#if idx === 0 || (idx > 0 && chat.time_range !== $chats[idx - 1].time_range)}
 									<div
-										class="w-full pl-2.5 text-xs text-gray-500 dark:text-gray-500 font-medium {idx ===
+										class="w-full pl-2.5 text-xs text-gray-500 dark:text-white border-b border-b-[#ccc] dark:border-b-white font-medium {idx ===
 										0
 											? ''
 											: 'pt-5'} pb-1.5"
@@ -985,16 +1167,8 @@
 		</div>
 
 		<div class="px-2">
-			<div class="flex flex-col font-primary">
+			<div class="flex flex-row justify-between font-primary">
 				{#if $user !== undefined && $user !== null}
-					<UserMenu
-						role={$user?.role}
-						on:show={(e) => {
-							if (e.detail === 'archived-chat') {
-								showArchivedChats.set(true);
-							}
-						}}
-					>
 						<button
 							class=" flex items-center rounded-xl py-2.5 px-2.5 w-full hover:bg-gray-100 dark:hover:bg-gray-900 transition"
 							on:click={() => {
@@ -1010,8 +1184,19 @@
 							</div>
 							<div class=" self-center font-medium">{$user?.name}</div>
 						</button>
-					</UserMenu>
+						
+					
 				{/if}
+				<div class=" self-center mr-3 cursor-pointer"  on:click={async () => {
+					const res = await userSignOut();
+					user.set(null);
+					localStorage.removeItem('token');
+
+					location.href = res?.redirect_url ?? '/auth';
+					show = false;
+				}}>
+					<SignOut className="w-5 h-5" strokeWidth="1.5" />
+				</div>
 			</div>
 		</div>
 	</div>

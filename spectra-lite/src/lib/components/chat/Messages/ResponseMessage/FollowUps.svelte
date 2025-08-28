@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ArrowTurnDownRight from '$lib/components/icons/ArrowTurnDownRight.svelte';
 	import { onMount, tick, getContext } from 'svelte';
+	import { MessageSquare } from "lucide-svelte"
 
 	const i18n = getContext('i18n');
 
@@ -23,7 +23,7 @@
 				title={followUp}
 				aria-label={followUp}
 			>
-				<ArrowTurnDownRight className="size-3.5" />
+				<MessageSquare class="w-4 h-4" strokeWidth="2" />
 
 				<div class="line-clamp-1">
 					{followUp}

@@ -48,7 +48,7 @@
 		<ChevronDown className="absolute end-2 top-1/2 -translate-y-[45%] size-3.5" strokeWidth="2.5" />
 	</Select.Trigger>
 	<Select.Content
-		class="w-full rounded-lg  bg-white dark:bg-gray-900 dark:text-white shadow-lg border border-gray-300/30 dark:border-gray-700/40  outline-hidden"
+		class="w-full rounded-lg  bg-[#f5f7fa] dark:bg-[#1a1e2e]  dark:text-white shadow-lg border border-gray-300/30 dark:border-gray-700/40  outline-hidden"
 		transition={flyAndScale}
 		sideOffset={4}
 	>

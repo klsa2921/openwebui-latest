@@ -435,7 +435,11 @@
 	};
 
 	let feedbackLoading = false;
-
+	const confirmToasterFeedback = async() => {
+		feedbackLoading = true;
+		toast.success($i18n.t('Thanks for your feedback!'));
+		feedbackLoading = false;
+	}
 	const feedbackHandler = async (rating: number | null = null, details: object | null = null) => {
 		feedbackLoading = true;
 		console.log('Feedback', rating, details);
@@ -606,8 +610,8 @@
 			<ProfileImage
 				src={model?.info?.meta?.profile_image_url ??
 					($i18n.language === 'dg-DG'
-						? `${WEBUI_BASE_URL}/doge.png`
-						: `${WEBUI_BASE_URL}/favicon.png`)}
+						? `/doge.png`
+						: `/favicon.png`)}
 				className={'size-8 assistant-message-profile-image'}
 			/>
 		</div>
@@ -768,7 +772,7 @@
 									<div class="flex space-x-1.5">
 										<button
 											id="close-edit-message-button"
-											class="px-4 py-2 bg-white dark:bg-gray-900 hover:bg-gray-100 text-gray-800 dark:text-gray-100 transition rounded-3xl"
+											class="px-4 py-2 bg-[#f5f7fa] dark:bg-[#1a1e2e]  hover:bg-gray-100 text-gray-800 dark:text-gray-100 transition rounded-3xl"
 											on:click={() => {
 												cancelEditMessage();
 											}}
@@ -1027,7 +1031,7 @@
 										</svg>
 									</button>
 								</Tooltip>
-
+							<!--
 								{#if $user?.role === 'admin' || ($user?.permissions?.chat?.tts ?? true)}
 									<Tooltip content={$i18n.t('Read Aloud')} placement="bottom">
 										<button
@@ -1111,7 +1115,7 @@
 										</button>
 									</Tooltip>
 								{/if}
-
+							-->
 								{#if $config?.features.enable_image_generation && ($user?.role === 'admin' || $user?.permissions?.features?.image_generation) && !readOnly}
 									<Tooltip content={$i18n.t('Generate Image')} placement="bottom">
 										<button
@@ -1178,7 +1182,7 @@
 										</button>
 									</Tooltip>
 								{/if}
-
+							<!--
 								{#if message.usage}
 									<Tooltip
 										content={message.usage
@@ -1222,7 +1226,7 @@
 										</button>
 									</Tooltip>
 								{/if}
-
+						-->
 								{#if !readOnly}
 									{#if !$temporaryChatEnabled && ($config?.features.enable_message_rating ?? true)}
 										<Tooltip content={$i18n.t('Good Response')} placement="bottom">
@@ -1237,7 +1241,7 @@
 													: ''} dark:hover:text-white hover:text-black transition disabled:cursor-progress disabled:hover:bg-transparent"
 												disabled={feedbackLoading}
 												on:click={async () => {
-													await feedbackHandler(1);
+													await confirmToasterFeedback();
 													window.setTimeout(() => {
 														document
 															.getElementById(`message-feedback-${message.id}`)
@@ -1275,7 +1279,7 @@
 													: ''} dark:hover:text-white hover:text-black transition disabled:cursor-progress disabled:hover:bg-transparent"
 												disabled={feedbackLoading}
 												on:click={async () => {
-													await feedbackHandler(-1);
+													await confirmToasterFeedback();
 													window.setTimeout(() => {
 														document
 															.getElementById(`message-feedback-${message.id}`)

@@ -585,7 +585,7 @@ input[type='number'] {
 }
 
 .tiptap tr {
-	@apply bg-white dark:bg-gray-900 dark:border-gray-850 text-xs;
+	@apply bg-[#f5f7fa] dark:bg-[#1a1e2e] dark:border-gray-850 text-xs;
 }
 
 .tippy-box[data-theme~='transparent'] {

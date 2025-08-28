@@ -188,7 +188,7 @@
 		class="px-2 mb-2 text-left w-full absolute bottom-0 left-0 right-0 z-10"
 	>
 		<div class="flex w-full rounded-xl border border-gray-100 dark:border-gray-850">
-			<div class="flex flex-col w-full rounded-xl bg-white dark:bg-gray-900 dark:text-gray-100">
+			<div class="flex flex-col w-full rounded-xl bg-[#f5f7fa] dark:bg-[#1a1e2e]  dark:text-gray-100">
 				<div
 					class="m-1 overflow-y-auto p-1 rounded-r-xl space-y-0.5 scrollbar-hidden max-h-60"
 					id="command-options-container"

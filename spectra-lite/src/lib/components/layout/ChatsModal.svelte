@@ -99,43 +99,55 @@
 		</div>
 
 		<div class="flex flex-col w-full px-5 pb-4 dark:text-gray-200">
-			<div class=" flex w-full space-x-2 mb-0.5">
-				<div class="flex flex-1">
-					<div class=" self-center ml-1 mr-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							class="w-4 h-4"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</div>
-					<input
-						class=" w-full text-sm pr-4 py-1 rounded-r-xl outline-hidden bg-transparent"
-						bind:value={query}
-						placeholder={$i18n.t('Search Chats')}
-					/>
+			<div class="flex w-full mb-2">
+  <div
+    class="flex flex-1 items-center px-3 py-2
+           border border-gray-200 dark:border-gray-700
+           rounded-xl bg-white dark:bg-gray-900
+           shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition"
+  >
+    <!-- Icon -->
+    <div class="text-gray-400 dark:text-gray-500 mr-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        class="w-4 h-4"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </div>
 
-					{#if query}
-						<div class="self-center pl-1.5 pr-1 translate-y-[0.5px] rounded-l-xl bg-transparent">
-							<button
-								class="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition"
-								on:click={() => {
-									query = '';
-									selectedIdx = 0;
-								}}
-							>
-								<XMark className="size-3" strokeWidth="2" />
-							</button>
-						</div>
-					{/if}
-				</div>
-			</div>
+    <!-- Input -->
+    <input
+      class="w-full text-sm bg-transparent outline-none
+             placeholder-gray-400 dark:placeholder-gray-500
+             text-gray-800 dark:text-gray-200"
+      bind:value={query}
+      placeholder={$i18n.t('Search Chats')}
+    />
+
+    <!-- Clear Button -->
+    {#if query}
+      <div class="ml-2">
+        <button
+          class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          on:click={() => {
+            query = '';
+            selectedIdx = 0;
+          }}
+        >
+          <XMark className="size-3" strokeWidth="2" />
+        </button>
+      </div>
+    {/if}
+  </div>
+</div>
+
 
 			<div class=" flex flex-col w-full sm:flex-row sm:justify-center sm:space-x-6">
 				{#if chatList}

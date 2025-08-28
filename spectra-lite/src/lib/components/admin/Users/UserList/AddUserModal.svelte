@@ -139,160 +139,183 @@
 		</div>
 
 		<div class="flex flex-col md:flex-row w-full px-4 pb-3 md:space-x-4 dark:text-gray-200">
-			<div class=" flex flex-col w-full sm:flex-row sm:justify-center sm:space-x-6">
-				<form
-					class="flex flex-col w-full"
-					on:submit|preventDefault={() => {
-						submitHandler();
-					}}
-				>
-					<div
-						class="flex -mt-2 mb-1.5 gap-1 scrollbar-none overflow-x-auto w-fit text-center text-sm font-medium rounded-full bg-transparent dark:text-gray-200"
+			<div class="flex flex-col w-full sm:flex-row sm:justify-center sm:space-x-6">
+	<form
+		class="flex flex-col w-full max-w-lg bg-white dark:bg-gray-900 
+			rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 
+			p-6 transition"
+		on:submit|preventDefault={() => submitHandler()}
+	>
+		<!-- Tabs -->
+		<div
+			class="flex mb-5 gap-2 overflow-x-auto scrollbar-none text-center text-sm font-medium"
+		>
+			<button
+				class="px-4 py-2 rounded-full transition
+					{tab === '' 
+						? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white shadow-sm' 
+						: 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}"
+				type="button"
+				on:click={() => (tab = '')}
+			>
+				{$i18n.t('Form')}
+			</button>
+
+			<!-- Uncomment if CSV Import needed -->
+			<!--
+			<button
+				class="px-4 py-2 rounded-full transition
+					{tab === 'import' 
+						? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white shadow-sm' 
+						: 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}"
+				type="button"
+				on:click={() => (tab = 'import')}
+			>
+				{$i18n.t('CSV Import')}
+			</button>
+			-->
+		</div>
+
+		<!-- Content -->
+		<div>
+			{#if tab === ''}
+				<!-- Role -->
+				<div class="flex flex-col w-full mb-4">
+					<label class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+						{$i18n.t('Role')}
+					</label>
+					<select
+						class="w-full capitalize rounded-lg text-sm px-3 py-2 
+							border border-gray-300 dark:border-gray-700 
+							bg-gray-50 dark:bg-gray-800 
+							shadow-sm focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 
+							transition outline-none"
+						bind:value={_user.role}
+						required
 					>
+						<option value="pending"> {$i18n.t('pending')} </option>
+						<option value="user"> {$i18n.t('user')} </option>
+						<option value="admin"> {$i18n.t('admin')} </option>
+					</select>
+				</div>
+
+				<!-- Name -->
+				<div class="flex flex-col w-full mb-4">
+					<label class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+						{$i18n.t('Name')}
+					</label>
+					<input
+						class="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+							bg-gray-50 dark:bg-gray-800 
+							shadow-sm focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 
+							transition outline-none"
+						type="text"
+						bind:value={_user.name}
+						placeholder={$i18n.t('Enter Your Full Name')}
+						required
+						autocomplete="off"
+					/>
+				</div>
+
+				<!-- Email -->
+				<div class="flex flex-col w-full mb-4">
+					<label class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+						{$i18n.t('Email')}
+					</label>
+					<input
+						class="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+							bg-gray-50 dark:bg-gray-800 
+							shadow-sm focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 
+							transition outline-none"
+						type="email"
+						bind:value={_user.email}
+						placeholder={$i18n.t('Enter Your Email')}
+						required
+					/>
+				</div>
+
+				<!-- Password -->
+				<div class="flex flex-col w-full mb-4">
+					<label class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-300">
+						{$i18n.t('Password')}
+					</label>
+					<input
+						class="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+							bg-gray-50 dark:bg-gray-800 
+							shadow-sm focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 
+							transition outline-none"
+						type="password"
+						bind:value={_user.password}
+						placeholder={$i18n.t('Enter Your Password')}
+						autocomplete="off"
+					/>
+				</div>
+			{:else if tab === 'import'}
+				<!-- Import CSV -->
+				<div>
+					<div class="mb-3 w-full">
+						<input
+							id="upload-user-csv-input"
+							hidden
+							bind:files={inputFiles}
+							type="file"
+							accept=".csv"
+						/>
+
 						<button
-							class="min-w-fit p-1.5 {tab === ''
-								? ''
-								: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
+							class="w-full text-sm font-medium py-3 bg-gray-50 dark:bg-gray-800 
+								border-2 border-dashed border-gray-300 dark:border-gray-700 
+								rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 
+								shadow-sm transition"
 							type="button"
-							on:click={() => {
-								tab = '';
-							}}>{$i18n.t('Form')}</button
+							on:click={() => document.getElementById('upload-user-csv-input')?.click()}
 						>
-
-						<button
-							class="min-w-fit p-1.5 {tab === 'import'
-								? ''
-								: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
-							type="button"
-							on:click={() => {
-								tab = 'import';
-							}}>{$i18n.t('CSV Import')}</button
-						>
-					</div>
-
-					<div class="px-1">
-						{#if tab === ''}
-							<div class="flex flex-col w-full mb-3">
-								<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Role')}</div>
-
-								<div class="flex-1">
-									<select
-										class="w-full capitalize rounded-lg text-sm bg-transparent dark:disabled:text-gray-500 outline-hidden"
-										bind:value={_user.role}
-										placeholder={$i18n.t('Enter Your Role')}
-										required
-									>
-										<option value="pending"> {$i18n.t('pending')} </option>
-										<option value="user"> {$i18n.t('user')} </option>
-										<option value="admin"> {$i18n.t('admin')} </option>
-									</select>
-								</div>
-							</div>
-
-							<div class="flex flex-col w-full mt-1">
-								<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Name')}</div>
-
-								<div class="flex-1">
-									<input
-										class="w-full text-sm bg-transparent disabled:text-gray-500 dark:disabled:text-gray-500 outline-hidden"
-										type="text"
-										bind:value={_user.name}
-										placeholder={$i18n.t('Enter Your Full Name')}
-										autocomplete="off"
-										required
-									/>
-								</div>
-							</div>
-
-							<hr class=" border-gray-100 dark:border-gray-850 my-2.5 w-full" />
-
-							<div class="flex flex-col w-full">
-								<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Email')}</div>
-
-								<div class="flex-1">
-									<input
-										class="w-full text-sm bg-transparent disabled:text-gray-500 dark:disabled:text-gray-500 outline-hidden"
-										type="email"
-										bind:value={_user.email}
-										placeholder={$i18n.t('Enter Your Email')}
-										required
-									/>
-								</div>
-							</div>
-
-							<div class="flex flex-col w-full mt-1">
-								<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Password')}</div>
-
-								<div class="flex-1">
-									<input
-										class="w-full text-sm bg-transparent disabled:text-gray-500 dark:disabled:text-gray-500 outline-hidden"
-										type="password"
-										bind:value={_user.password}
-										placeholder={$i18n.t('Enter Your Password')}
-										autocomplete="off"
-									/>
-								</div>
-							</div>
-						{:else if tab === 'import'}
-							<div>
-								<div class="mb-3 w-full">
-									<input
-										id="upload-user-csv-input"
-										hidden
-										bind:files={inputFiles}
-										type="file"
-										accept=".csv"
-									/>
-
-									<button
-										class="w-full text-sm font-medium py-3 bg-transparent hover:bg-gray-100 border border-dashed dark:border-gray-850 dark:hover:bg-gray-850 text-center rounded-xl"
-										type="button"
-										on:click={() => {
-											document.getElementById('upload-user-csv-input')?.click();
-										}}
-									>
-										{#if inputFiles}
-											{inputFiles.length > 0 ? `${inputFiles.length}` : ''} document(s) selected.
-										{:else}
-											{$i18n.t('Click here to select a csv file.')}
-										{/if}
-									</button>
-								</div>
-
-								<div class=" text-xs text-gray-500">
-									ⓘ {$i18n.t(
-										'Ensure your CSV file includes 4 columns in this order: Name, Email, Password, Role.'
-									)}
-									<a
-										class="underline dark:text-gray-200"
-										href="{WEBUI_BASE_URL}/static/user-import.csv"
-									>
-										{$i18n.t('Click here to download user import template file.')}
-									</a>
-								</div>
-							</div>
-						{/if}
-					</div>
-
-					<div class="flex justify-end pt-3 text-sm font-medium">
-						<button
-							class="px-3.5 py-1.5 text-sm font-medium bg-black hover:bg-gray-900 text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full flex flex-row space-x-1 items-center {loading
-								? ' cursor-not-allowed'
-								: ''}"
-							type="submit"
-							disabled={loading}
-						>
-							{$i18n.t('Save')}
-
-							{#if loading}
-								<div class="ml-2 self-center">
-									<Spinner />
-								</div>
+							{#if inputFiles}
+								{inputFiles.length > 0 ? `${inputFiles.length}` : ''} document(s) selected.
+							{:else}
+								{$i18n.t('Click here to select a csv file.')}
 							{/if}
 						</button>
 					</div>
-				</form>
-			</div>
+
+					<div class="text-xs text-gray-500 dark:text-gray-400">
+						ⓘ {$i18n.t(
+							'Ensure your CSV file includes 4 columns in this order: Name, Email, Password, Role.'
+						)}
+						<a
+							class="underline dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition"
+							href="{WEBUI_BASE_URL}/static/user-import.csv"
+						>
+							{$i18n.t('Click here to download user import template file.')}
+						</a>
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Save button -->
+		<div class="flex justify-end pt-5">
+			<button
+				class="px-5 py-2 text-sm font-medium rounded-lg shadow-md
+					bg-blue-600 text-white hover:bg-blue-700 
+					dark:bg-blue-500 dark:hover:bg-blue-600
+					transition flex items-center space-x-2
+					{loading ? ' cursor-not-allowed opacity-70' : ''}"
+				type="submit"
+				disabled={loading}
+			>
+				<span>{$i18n.t('Save')}</span>
+
+				{#if loading}
+					<div class="self-center">
+						<Spinner />
+					</div>
+				{/if}
+			</button>
+		</div>
+	</form>
+</div>
+
 		</div>
 	</div>
 </Modal>

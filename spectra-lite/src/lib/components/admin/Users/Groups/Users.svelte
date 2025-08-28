@@ -43,66 +43,82 @@
 	let query = '';
 </script>
 
-<div>
-	<div class="flex w-full">
-		<div class="flex flex-1">
-			<div class=" self-center mr-3">
-				<Search />
-			</div>
-			<input
-				class=" w-full text-sm pr-4 rounded-r-xl outline-hidden bg-transparent"
-				bind:value={query}
-				placeholder={$i18n.t('Search')}
-			/>
-		</div>
-	</div>
+<div class="flex flex-col gap-4 w-full">
 
-	<div class="mt-3 max-h-[22rem] overflow-y-auto scrollbar-hidden">
-		<div class="flex flex-col gap-2.5">
-			{#if filteredUsers.length > 0}
-				{#each filteredUsers as user, userIdx (user.id)}
-					<div class="flex flex-row items-center gap-3 w-full text-sm">
-						<div class="flex items-center">
-							<Checkbox
-								state={userIds.includes(user.id) ? 'checked' : 'unchecked'}
-								on:change={(e) => {
-									if (e.detail === 'checked') {
-										userIds = [...userIds, user.id];
-									} else {
-										userIds = userIds.filter((id) => id !== user.id);
-									}
-								}}
-							/>
-						</div>
+  <!-- Search Input -->
+  <div class="flex w-full">
+    <div
+      class="flex flex-1 items-center px-4 py-2
+             border border-gray-200 dark:border-gray-700
+             rounded-xl bg-white dark:bg-gray-900
+             shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition"
+    >
+      <!-- Icon -->
+      <div class="text-gray-400 dark:text-gray-500 mr-2">
+        <Search className="size-4" />
+      </div>
 
-						<div class="flex w-full items-center justify-between">
-							<Tooltip content={user.email} placement="top-start">
-								<div class="flex">
-									<img
-										class=" rounded-full size-5 object-cover mr-2.5"
-										src={user.profile_image_url.startsWith(WEBUI_BASE_URL) ||
-										user.profile_image_url.startsWith('https://www.gravatar.com/avatar/') ||
-										user.profile_image_url.startsWith('data:')
-											? user.profile_image_url
-											: `${WEBUI_BASE_URL}/user.png`}
-										alt="user"
-									/>
+      <!-- Input -->
+      <input
+        class="w-full text-sm bg-transparent outline-none 
+               placeholder-gray-400 dark:placeholder-gray-500 
+               text-gray-800 dark:text-gray-200"
+        bind:value={query}
+        placeholder={$i18n.t('Search')}
+      />
+    </div>
+  </div>
 
-									<div class=" font-medium self-center">{user.name}</div>
-								</div>
-							</Tooltip>
+  <!-- Users List -->
+  <div class="max-h-[22rem] overflow-y-auto scrollbar-hidden flex flex-col gap-2.5">
+    {#if filteredUsers.length > 0}
+      {#each filteredUsers as user (user.id)}
+        <div
+          class="flex flex-row items-center gap-3 w-full p-2 rounded-lg
+                 border border-gray-100 dark:border-gray-800
+                 bg-white dark:bg-gray-900 shadow-sm
+                 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        >
+          <div class="flex items-center">
+            <Checkbox
+              state={userIds.includes(user.id) ? 'checked' : 'unchecked'}
+              on:change={(e) => {
+                if (e.detail === 'checked') {
+                  userIds = [...userIds, user.id];
+                } else {
+                  userIds = userIds.filter((id) => id !== user.id);
+                }
+              }}
+            />
+          </div>
 
-							{#if userIds.includes(user.id)}
-								<Badge type="success" content="member" />
-							{/if}
-						</div>
-					</div>
-				{/each}
-			{:else}
-				<div class="text-gray-500 text-xs text-center py-2 px-10">
-					{$i18n.t('No users were found.')}
-				</div>
-			{/if}
-		</div>
-	</div>
+          <div class="flex w-full items-center justify-between">
+            <Tooltip content={user.email} placement="top-start">
+              <div class="flex items-center">
+                <img
+                  class="rounded-full w-10 h-10 object-cover mr-3"
+                  src={user.profile_image_url.startsWith(WEBUI_BASE_URL) ||
+                       user.profile_image_url.startsWith('https://www.gravatar.com/avatar/') ||
+                       user.profile_image_url.startsWith('data:')
+                       ? user.profile_image_url
+                       : `${WEBUI_BASE_URL}/user.png`}
+                  alt="user"
+                />
+                <div class="font-medium self-center text-gray-700 dark:text-gray-200">{user.name}</div>
+              </div>
+            </Tooltip>
+
+            {#if userIds.includes(user.id)}
+              <Badge type="success" content="member" />
+            {/if}
+          </div>
+        </div>
+      {/each}
+    {:else}
+      <div class="text-gray-500 text-xs text-center py-4 px-4 rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        {$i18n.t('No users were found.')}
+      </div>
+    {/if}
+  </div>
 </div>
+

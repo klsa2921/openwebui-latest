@@ -158,12 +158,20 @@
 
 		<div class="flex gap-1">
 			<div class=" flex w-full space-x-2">
-				<div class="flex flex-1">
-					<div class=" self-center ml-1 mr-3">
-						<Search />
+				<div
+					class="flex flex-1 items-center px-3 py-2 
+						border border-gray-200 dark:border-gray-700 
+						rounded-xl bg-white dark:bg-gray-900 
+						shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition"
+				>
+					<!-- Icon -->
+					<div class="text-gray-400 dark:text-gray-500 mr-2">
+						<Search className="size-4" />
 					</div>
+
+					<!-- Input -->
 					<input
-						class=" w-full text-sm pr-4 py-1 rounded-r-xl outline-hidden bg-transparent"
+						class="w-full text-sm bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-800 dark:text-gray-200"
 						bind:value={search}
 						placeholder={$i18n.t('Search')}
 					/>
@@ -209,19 +217,18 @@
 				</div>
 			</div>
 		{:else}
-			<div>
-				<div class=" flex items-center gap-3 justify-between text-xs uppercase px-1 font-bold">
-					<div class="w-full basis-3/5">Group</div>
-
-					<div class="w-full basis-2/5 text-right">Users</div>
+			<div class="w-full">
+	<!-- Header -->
+				<div class="flex items-center justify-between text-xs uppercase font-bold px-3 py-2">
+					<div class="basis-3/5">Group</div>
+					<div class="basis-2/5 text-right">Users</div>
 				</div>
 
-				<hr class="mt-1.5 border-gray-100 dark:border-gray-850" />
+				<hr class="border-gray-200 dark:border-gray-700" />
 
+				<!-- Group rows -->
 				{#each filteredGroups as group}
-					<div class="my-2">
-						<GroupItem {group} {users} {setGroups} />
-					</div>
+					<GroupItem {group} {users} {setGroups} />
 				{/each}
 			</div>
 		{/if}

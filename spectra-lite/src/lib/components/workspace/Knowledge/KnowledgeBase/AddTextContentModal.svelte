@@ -20,7 +20,7 @@
 	let voiceInput = false;
 </script>
 
-<Modal size="full" containerClassName="" className="h-full bg-white dark:bg-gray-900" bind:show>
+<Modal size="full" containerClassName="" className="h-full bg-[#f5f7fa] dark:bg-[#1a1e2e]" bind:show>
 	<div class="absolute top-0 right-0 p-5">
 		<button
 			class="self-center dark:text-white"

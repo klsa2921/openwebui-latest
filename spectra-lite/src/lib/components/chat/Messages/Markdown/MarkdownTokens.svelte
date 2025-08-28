@@ -142,7 +142,7 @@
 					</thead>
 					<tbody>
 						{#each token.rows as row, rowIdx}
-							<tr class="bg-white dark:bg-gray-900 dark:border-gray-850 text-xs">
+							<tr class="bg-[#f5f7fa] dark:bg-[#1a1e2e]  dark:border-gray-850 text-xs">
 								{#each row ?? [] as cell, cellIdx}
 									<td
 										class="px-3! py-1.5! text-gray-900 dark:text-white w-max border border-gray-100 dark:border-gray-850"

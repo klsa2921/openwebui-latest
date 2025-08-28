@@ -505,7 +505,7 @@
 			<tbody class="">
 				{#each sortedModels as model, modelIdx (model.id)}
 					<tr
-						class="bg-white dark:bg-gray-900 dark:border-gray-850 text-xs group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850/50 transition"
+						class="bg-[#f5f7fa] dark:bg-[#1a1e2e]  dark:border-gray-850 text-xs group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850/50 transition"
 						on:click={() => openLeaderboardModelModal(model)}
 					>
 						<td class="px-3 py-1.5 text-left font-medium text-gray-900 dark:text-white w-fit">

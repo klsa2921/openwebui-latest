@@ -49,6 +49,8 @@
 	import { generateAutoCompletion } from '$lib/apis';
 	import { deleteFileById } from '$lib/apis/files';
 
+  	import { Send } from "lucide-svelte";
+
 	import { WEBUI_BASE_URL, WEBUI_API_BASE_URL, PASTED_TEXT_CHARACTER_LIMIT } from '$lib/constants';
 
 	import InputMenu from './MessageInput/InputMenu.svelte';
@@ -72,6 +74,8 @@
 
 	import { KokoroWorker } from '$lib/workers/KokoroWorker';
 	import InputVariablesModal from './MessageInput/InputVariablesModal.svelte';
+    import ListBullet from '../icons/ListBullet.svelte';
+    import ChatBubble from '../icons/ChatBubble.svelte';
 	const i18n = getContext('i18n');
 
 	export let transparentBackground = false;
@@ -922,7 +926,7 @@
 			</div>
 		</div>
 
-		<div class="{transparentBackground ? 'bg-transparent' : 'bg-white dark:bg-gray-900'} ">
+		<div class="{transparentBackground ? 'bg-transparent' : 'bg-[#f5f7fa] dark:bg-[#1a1e2e] '} ">
 			<div
 				class="{($settings?.widescreenMode ?? null)
 					? 'max-w-full'
@@ -1889,29 +1893,19 @@
 										{:else}
 											<div class=" flex items-center">
 												<Tooltip content={$i18n.t('Send message')}>
-													<button
-														id="send-message-button"
-														class="{!(prompt === '' && files.length === 0)
-															? 'bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 '
-															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition rounded-full p-1.5 self-center"
-														type="submit"
-														disabled={prompt === '' && files.length === 0}
-													>
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 16 16"
-															fill="currentColor"
-															class="size-5"
-														>
-															<path
-																fill-rule="evenodd"
-																d="M8 14a.75.75 0 0 1-.75-.75V4.56L4.03 7.78a.75.75 0 0 1-1.06-1.06l4.5-4.5a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06L8.75 4.56v8.69A.75.75 0 0 1 8 14Z"
-																clip-rule="evenodd"
-															/>
-														</svg>
-													</button>
-												</Tooltip>
-											</div>
+										<button
+											id="send-message-button"
+											class="{!(prompt === '' && files.length === 0)
+											? 'bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100'
+											: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} 
+											transition rounded-full p-2 self-center shadow-sm hover:shadow-md"
+											type="submit"
+											disabled={prompt === '' && files.length === 0}
+										>
+											<Send class="w-5 h-5" strokeWidth="2.5" />
+										</button>
+									</Tooltip>
+																					</div>
 										{/if}
 									</div>
 								</div>

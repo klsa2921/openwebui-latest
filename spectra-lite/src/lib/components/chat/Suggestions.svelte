@@ -83,41 +83,46 @@
 
 <div class="w-full">
 	{#if filteredPrompts.length > 0}
-		<div role="list" class="overflow-auto scrollbar-none items-start {className}">
-			{#each filteredPrompts as prompt, idx (prompt.id || prompt.content)}
-				<!-- svelte-ignore a11y-no-interactive-element-to-noninteractive-role -->
-				<button
-					role="listitem"
-					class="waterfall flex flex-col flex-1 shrink-0 w-full justify-between
-				       px-3 py-2 rounded-xl bg-transparent hover:bg-black/5
-				       dark:hover:bg-white/5 transition group"
-					style="animation-delay: {idx * 60}ms"
-					on:click={() => onSelect({ type: 'prompt', data: prompt.content })}
-				>
-					<div class="flex flex-col text-left">
-						{#if prompt.title && prompt.title[0] !== ''}
-							<div
-								class="text-sm font-medium dark:text-gray-300 dark:group-hover:text-gray-200 transition line-clamp-1"
-							>
-								{prompt.title[0]}
-							</div>
-							<div class="text-xs text-gray-600 dark:text-gray-400 font-normal line-clamp-1">
-								{prompt.title[1]}
-							</div>
-						{:else}
-							<div
-								class="font-medium dark:text-gray-300 dark:group-hover:text-gray-200 transition line-clamp-1"
-							>
-								{prompt.content}
-							</div>
-							<div class="text-xs text-gray-600 dark:text-gray-400 font-normal line-clamp-1">
-								{$i18n.t('Prompt')}
-							</div>
-						{/if}
-					</div>
-				</button>
-			{/each}
-		</div>
+		<div
+  role="list"
+  class="overflow-auto scrollbar-none grid grid-cols-1 sm:grid-cols-2 gap-3 items-start {className}"
+>
+  {#each filteredPrompts as prompt, idx (prompt.id || prompt.content)}
+    <!-- svelte-ignore a11y-no-interactive-element-to-noninteractive-role -->
+    <button
+      role="listitem"
+      class="waterfall flex flex-col justify-between
+             px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 
+             bg-white dark:bg-gray-800 shadow-sm hover:shadow-md
+             transition-all duration-200 group text-left"
+      style="animation-delay: {idx * 60}ms"
+      on:click={() => onSelect({ type: 'prompt', data: prompt.content })}
+    >
+      <div class="flex flex-col">
+        {#if prompt.title && prompt.title[0] !== ''}
+          <div
+            class="text-sm font-medium text-gray-900 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-white transition"
+          >
+            {prompt.title[0]}
+          </div>
+          <div class="text-xs text-gray-600 dark:text-gray-400 font-normal line-clamp-1">
+            {prompt.title[1]}
+          </div>
+        {:else}
+          <div
+            class="text-sm font-medium text-gray-900 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-white transition"
+          >
+            {prompt.content}
+          </div>
+          <div class="text-xs text-gray-600 dark:text-gray-400 font-normal line-clamp-1">
+            {$i18n.t('Prompt')}
+          </div>
+        {/if}
+      </div>
+    </button>
+  {/each}
+</div>
+
 	{/if}
 </div>
 

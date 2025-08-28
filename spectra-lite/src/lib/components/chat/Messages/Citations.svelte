@@ -111,7 +111,7 @@
 				{#each citations as citation, idx}
 					<button
 						id={`source-${id}-${idx + 1}`}
-						class="no-toggle outline-hidden flex dark:text-gray-300 p-1 bg-white dark:bg-gray-900 rounded-xl max-w-96"
+						class="no-toggle outline-hidden flex dark:text-gray-300 p-1 bg-[#f5f7fa] dark:bg-[#1a1e2e]  rounded-xl max-w-96"
 						on:click={() => {
 							showCitationModal = true;
 							selectedCitation = citation;
