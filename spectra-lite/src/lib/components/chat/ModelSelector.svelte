@@ -52,18 +52,21 @@
 	</div>
 	</div>
 			<div class="flex flex-wrap gap-2">
-				{#each $models as model}
+				{#each $models as model, index}
+				{#if model?.id !== "arena-model"}
 					<button
-						class="px-3 py-2 text-sm rounded-md border font-medium text-left transition-all
-							hover:bg-blue-50 dark:hover:bg-gray-800
-							{selectedModel === model.id
-								? 'bg-blue-100 dark:bg-gray-700 border-blue-500 dark:border-blue-400 text-blue-900 dark:text-blue-200'
-								: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200'}"
-						on:click={() => toggleModel(model.id, index)}
+					class="px-3 py-2 text-sm rounded-md border font-medium text-left transition-all
+						hover:bg-blue-50 dark:hover:bg-gray-800
+						{selectedModel === model.id
+						? 'bg-blue-100 dark:bg-gray-700 border-blue-500 dark:border-blue-400 text-blue-900 dark:text-blue-200'
+						: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200'}"
+					on:click={() => toggleModel(model.id, index)}
 					>
-						{model.name}
+					{model.name}
 					</button>
+				{/if}
 				{/each}
+
 			</div>
 
 	<!-- Temporary chat switch -->
